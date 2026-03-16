@@ -1,6 +1,6 @@
 !!python/object:langchain_core.prompts.chat.ChatPromptTemplate
 __dict__:
-  name: null
+  name: bug_to_user_story_v2
   input_variables:
   - bug_report
   optional_variables: []
@@ -8,8 +8,9 @@ __dict__:
   output_parser: null
   partial_variables: {}
   metadata:
-    lc_hub_owner: leonanluppi
-    lc_hub_repo: bug_to_user_story_v1
+    lc_hub_owner: arquitetomovel
+    lc_hub_name: bug_to_user_story_v2
+    lc_hub_repo: bug_to_user_story_v2
     lc_hub_commit_hash: 2950c33dbd7ffaed2e440b50adfd7769d183f90faf0bae5aa4864354f88e4073
   tags: null
   messages:
