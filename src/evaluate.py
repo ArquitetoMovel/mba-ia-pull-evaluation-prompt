@@ -280,7 +280,7 @@ def main():
 
     for prompt_name in prompts_to_evaluate:
         evaluated_count += 1
-        experiment_prefix = f"{prompt_name}-eval5"
+        experiment_prefix = f"{prompt_name}-g-eval11"
 
         try:
             scores = run_evaluation(prompt_name, dataset_name, experiment_prefix)

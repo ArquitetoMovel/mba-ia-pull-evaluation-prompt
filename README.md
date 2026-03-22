@@ -49,6 +49,7 @@ Prompt: support_bot_v2_optimized
 ================================
 Status: APROVADO ✓ - Todas as métricas atingiram o mínimo de 0.9
 ```
+
 ---
 
 ## Tecnologias obrigatórias
@@ -75,14 +76,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI  # LLM Gemini
 
 ## OpenAI
 
-- Crie uma **API Key** da OpenAI: https://platform.openai.com/api-keys
+- Crie uma **API Key** da OpenAI: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 - **Modelo de LLM para responder**: `gpt-4o-mini`
 - **Modelo de LLM para avaliação**: `gpt-4o`
 - **Custo estimado:** ~$1-5 para completar o desafio
 
 ## Gemini (modelo free)
 
-- Crie uma **API Key** da Google: https://aistudio.google.com/app/apikey
+- Crie uma **API Key** da Google: [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 - **Modelo de LLM para responder**: `gemini-2.5-flash`
 - **Modelo de LLM para avaliação**: `gemini-2.5-flash`
 - **Limite:** 15 req/min, 1500 req/dia
@@ -156,9 +157,9 @@ Após refatorar os prompts, você deve enviá-los de volta ao LangSmith Prompt H
 - Editar prompt, fazer push e avaliar novamente
 - Repetir até **TODAS as métricas >= 0.9**
 
-### Critério de Aprovação:
+### Critério de Aprovação
 
-```
+```text
 - Tone Score >= 0.9
 - Acceptance Criteria Score >= 0.9
 - User Story Format Score >= 0.9
@@ -321,3 +322,192 @@ python src/evaluate.py
 - **Não altere os datasets de avaliação** - apenas os prompts em `prompts/bug_to_user_story_v2.yml`
 - **Itere, itere, itere** - é normal precisar de 3-5 iterações para atingir 0.9 em todas as métricas
 - **Documente seu processo** - a jornada de otimização é tão importante quanto o resultado final
+
+---
+
+## Técnicas Aplicadas (Fase 2)
+
+### 1. Role Prompting
+
+**Justificativa:**
+A técnica de Role Prompting foi escolhida para estabelecer um contexto profissional claro e especializado. Ao definir o LLM como um "Product Manager experiente, especialista em metodologias ágeis", garantimos que as respostas tenham o tom, linguagem e estrutura adequados para user stories de qualidade profissional.
+
+**Implementação no prompt:**
+
+```yaml
+system_prompt: |
+  ## Papel e Escopo
+
+  Você é um Product Manager experiente, especialista em metodologias ágeis e em traduzir
+  desafios técnicos em valor de negócio para o time de desenvolvimento.
+  Sua função é transformar relatos de bugs em User Stories bem estruturadas,
+  seguindo as melhores práticas de Scrum e XP.
+```
+
+**Impacto:**
+
+- Estabelece autoridade e expertise no domínio
+- Define expectativas claras sobre o tipo de output esperado
+- Garante uso de terminologia adequada (Scrum, XP, Agile)
+- Melhora consistência no tom profissional das respostas
+
+### 2. Few-shot Learning
+
+**Justificativa:**
+Few-shot Learning foi essencial para demonstrar padrões concretos de como converter bugs em user stories. Os exemplos servem como templates práticos, mostrando a estrutura exata, nível de detalhe e tom esperados.
+
+**Implementação no prompt:**
+Foram incluídos **3 exemplos completos** cobrindo diferentes níveis de complexidade:
+
+1. **Exemplo 1 - Bug Simples:** Botão de adicionar ao carrinho não funciona
+   - Demonstra formatação básica em 3 seções
+   - Mostra uso de linguagem positiva e empática
+   - Inclui critérios testáveis (Given-When-Then)
+
+2. **Exemplo 2 - Bug de Integração:** Webhook de pagamento falhando
+   - Demonstra como lidar com bugs técnicos complexos
+   - Mostra separação entre perspectiva do usuário e contexto técnico
+   - Inclui cenários de exceção e retry logic
+
+3. **Exemplo 3 - Bug de Performance:** App Android travando com muitas notificações
+   - Demonstra tratamento de edge cases (500+ notificações)
+   - Mostra requisitos não-funcionais (memória, FPS, tempo de carregamento)
+   - Inclui considerações de acessibilidade
+
+**Estrutura de cada exemplo:**
+
+```yaml
+## Exemplos
+
+### Exemplo 1
+**Relato de bug:** [input]
+
+## 1. USER STORY
+**User Story:** [output detalhado]
+
+## 2. CRITÉRIOS DE ACEITAÇÃO
+### ✅ Cenário Principal
+### ⚠️ Cenários de Exceção
+
+## 3. CONTEXTO E IMPLEMENTAÇÃO
+**Impacto do Problema:**
+**Impacto Positivo da Solução:**
+**Contexto Técnico:**
+**Tasks Técnicas Sugeridas:**
+```
+
+**Impacto:**
+
+- **Tone Score: 0.98** - Exemplos demonstram linguagem empática e positiva
+- **User Story Format Score: 0.99** - Estrutura clara e consistente em 3 seções
+- **Acceptance Criteria Score: 0.98** - Critérios testáveis no formato Given-When-Then
+- **Completeness Score: 1.00** - Todos os elementos necessários presentes
+
+### Técnicas Complementares
+
+Além das duas principais, foram aplicadas:
+
+**3. Instruções Explícitas e Estruturadas:**
+
+- Formato obrigatório em 3 seções numeradas
+- Regras claras (1-7) com exemplos de do's e don'ts
+- Diretrizes específicas para tom empático e linguagem positiva
+
+**4. Tratamento de Edge Cases:**
+
+- Cenários de exceção em todos os exemplos
+- Orientações para bugs complexos vs simples
+- Instruções para acessibilidade e tratamento de erros
+
+**5. Separação System vs User Prompt:**
+
+- System prompt: contexto, instruções, exemplos e regras
+- User prompt: apenas o bug report a ser convertido
+- Mantém clareza de responsabilidades
+
+---
+
+## Resultados Finais
+
+### Execução Bem-Sucedida - Avaliação com LLM-as-Judge
+
+```shell
+All support for the `google.generativeai` package has ended. It will no longer be receiving
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  from google.generativeai.caching import CachedContent  # type: ignore[import]
+View the evaluation results for experiment: 'bug_to_user_story_v2-g-eval11-d388035d' at:
+https://smith.langchain.com/o/e0a730a9-6102-4440-ba47-166cbeb00e99/datasets/a82749d2-47da-42fa-92ad-4374492775b8/compare?selectedSessions=93ea3668-95ee-4124-94c8-3abe93c1d563
+
+
+15it [07:52, 31.50s/it]
+
+==================================================
+Prompt: bug_to_user_story_v2
+==================================================
+  - Tone Score: 0.98 ✓
+  - Acceptance Criteria Score: 0.98 ✓
+  - User Story Format Score: 0.99 ✓
+  - Completeness Score: 1.00 ✓
+
+--------------------------------------------------
+📊 MÉDIA GERAL: 0.9873
+--------------------------------------------------
+
+✅ STATUS: APROVADO (todas métricas >= 0.9)
+
+==================================================
+RESUMO FINAL
+==================================================
+
+Prompts avaliados: 1
+Aprovados: 1
+Reprovados: 0
+
+✅ Todos os prompts atingiram score >= 0.9 em todas as métricas!
+
+✓ Confira os resultados em:
+  https://smith.langchain.com/projects/MbaPromptEval
+```
+
+### Análise dos Resultados
+
+| Métrica | Score | Objetivo | Status |
+| ------- | ----- | -------- | ------ |
+| Tone Score | **0.98** | ≥ 0.9 | ✅ APROVADO |
+| Acceptance Criteria Score | **0.98** | ≥ 0.9 | ✅ APROVADO |
+| User Story Format Score | **0.99** | ≥ 0.9 | ✅ APROVADO |
+| Completeness Score | **1.00** | ≥ 0.9 | ✅ APROVADO |
+| **MÉDIA GERAL** | **0.9873** | ≥ 0.9 | ✅ APROVADO |
+
+### Destaques
+
+- **Completeness Score: 1.00 (perfeito)** - Todas as user stories incluem narrativa, critérios de aceitação e contexto
+- **User Story Format Score: 0.99** - Estrutura em 3 seções respeitada consistentemente
+- **Tone Score: 0.98** - Linguagem empática, positiva e profissional mantida
+- **Acceptance Criteria Score: 0.98** - Critérios testáveis no formato Given-When-Then
+
+### Link para Avaliação no LangSmith
+
+[Ver resultados completos da avaliação](https://smith.langchain.com/o/e0a730a9-6102-4440-ba47-166cbeb00e99/datasets/a82749d2-47da-42fa-92ad-4374492775b8/compare?selectedSessions=93ea3668-95ee-4124-94c8-3abe93c1d563)
+
+---
+
+## Comparação v1 vs v2
+
+| Aspecto | v1 (Original) | v2 (Otimizado) |
+| ------- | ------------- | -------------- |
+| **Técnicas Aplicadas** | Nenhuma explícita | Role Prompting + Few-shot Learning |
+| **Exemplos** | 0 exemplos | 3 exemplos completos (simples, médio, complexo) |
+| **Estrutura** | Vaga | 3 seções numeradas obrigatórias |
+| **Instruções** | Genéricas | 7 regras específicas + diretrizes de tom |
+| **Tom** | Técnico | Empático, positivo, focado em valor de negócio |
+| **Edge Cases** | Não mencionados | Tratamento explícito em cenários de exceção |
+| **Média de Scores** | < 0.5 (estimado) | **0.9873** ✅ |
+
+### Print do dashboard do LangSmith mostrando a evolução dos prompts
+
+![Dashboard do LangSmith com resultados da avaliação](langsmith.jpg)
