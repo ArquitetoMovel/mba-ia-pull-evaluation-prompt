@@ -1,0 +1,34 @@
+name: "bug_to_user_story_base_v1"
+description: "Prompt inicial (baixa qualidade) para conversão de relatos de bugs em user stories.
+  Extraído do LangSmith Hub (leonanluppi/bug_to_user_story_v1)."
+version: "1.0"
+
+techniques_applied: []
+
+metadata:
+  lc_hub_owner: leonanluppi
+  lc_hub_repo: bug_to_user_story_v1
+  techniques: []
+
+tags:
+  - "bug-to-user-story"
+  - "v1"
+  - "baseline"
+
+system_prompt: &system_prompt |
+  Você é um assistente que ajuda a transformar relatos de bugs de usuários em tarefas para desenvolvedores.
+
+  Analise o relato de bug abaixo e crie uma user story a partir dele.
+
+  Relato de Bug:
+  ---
+  {bug_report}
+  ---
+
+  User Story gerada:
+
+messages:
+  - role: system
+    content: *system_prompt
+  - role: user
+    content: "{bug_report}"

@@ -35,14 +35,15 @@ def push_prompt_to_langsmith(prompt_name: str, prompt_data: dict) -> bool:
     check_env_vars(["LANGCHAIN_HUB_API_KEY"])
     try:
         # Obter o prompt em prompts/bug_to_user_story_v2.yml
-        prompt_template = ChatPromptTemplate.from_messages(prompt_data["messages"])
+        messages = [(msg["role"], msg["content"]) for msg in prompt_data["messages"]]
+        prompt_template = ChatPromptTemplate.from_messages(messages)
         # Push para o Hub (PÚBLICO)
         hub.push(
+            prompt_name,
             prompt_template,
-            name=prompt_name,
-            description=prompt_data.get("description", ""),
+            new_repo_is_public=True,
+            new_repo_description=prompt_data.get("description", ""),
             tags=prompt_data.get("tags", []),
-            visibility="public",
         )
         print(f"Prompt '{prompt_name}' pushed successfully!")
         return True
@@ -62,8 +63,6 @@ def validate_prompt(prompt_data: dict) -> tuple[bool, list]:
     Returns:
         (is_valid, errors) - Tupla com status e lista de erros
     """
-   
-
     errors = []
     if "messages" not in prompt_data:
         errors.append("Missing 'messages' key.")
@@ -80,14 +79,12 @@ def validate_prompt(prompt_data: dict) -> tuple[bool, list]:
 
 def main():
     """Função principal"""
-    data = load_yaml("prompts/bug_to_user_story_v2.yml")
-    print(f"data: {data}")
-    #if validate_prompt_data := validate_prompt(load_yaml("prompts/bug_to_user_story_v2.yml")):
-    #    print("Prompt data is valid. Proceeding to push...")
-    #    if push_prompt_to_langsmith("arquitetomovel/bug_to_user_story_v2", load_yaml("prompts/bug_to_user_story_v2.yml")):
-    #        print("Prompt pushed successfully!")
-    #    else:
-    #        print("Failed to push prompt.")
+    if validate_prompt_data := validate_prompt(load_yaml("prompts/bug_to_user_story_v2.yml")):
+        print("Prompt data is valid. Proceeding to push...")
+        if push_prompt_to_langsmith("arquitetomovel/bug_to_user_story_v2", load_yaml("prompts/bug_to_user_story_v2.yml")):
+            print("Prompt pushed successfully!")
+        else:
+            print("Failed to push prompt.")
 
 
 if __name__ == "__main__":

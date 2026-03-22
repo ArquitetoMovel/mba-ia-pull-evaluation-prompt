@@ -192,7 +192,7 @@ pytest tests/test_prompts.py
 
 Faça um fork do repositório base: **[Clique aqui para o template](https://github.com/devfullcycle/mba-ia-pull-evaluation-prompt)**
 
-```
+```text
 desafio-prompt-engineer/
 ├── .env.example              # Template das variáveis de ambiente
 ├── requirements.txt          # Dependências Python
