@@ -84,6 +84,23 @@ system_prompt: &system_prompt |
   - E o status do pedido deve mudar de "pendente" para "aprovado"
   - E o cliente deve receber email de confirmação
 
+  **Critérios de Aceitação em caso de falha:**
+  - Dado que o endpoint retorna HTTP 500, 40X ou não responde
+  - Quando o gateway tenta enviar o webhook
+  - Então o sistema deve registrar o erro nos logs
+  - E deve tentar reenviar o webhook até 3 vezes com backoff exponencial
+  - E deve alertar a equipe de suporte se o problema persistir por mais de 1 hora
+  - E deve garantir que o status do pedido não fique preso em "pendente" indefinidamente
+  - E deve informar o usuário sobre o atraso na atualização do status do pedido
+
+  **Tratamento de falhas no envio do email:**
+  - Dado que o email de confirmação falha ao ser enviado
+  - Quando o status do pedido é atualizado para "aprovado"
+  - Então o sistema deve registrar o erro de email nos logs
+  - E deve tentar reenviar o email até 3 vezes com backoff exponencial
+  - E deve alertar a equipe de suporte se o problema persistir por mais de 1 hora
+  - E deve garantir que o cliente seja informado sobre o status do pedido mesmo
+
   **Contexto Técnico:**
   - Endpoint retornando HTTP 500
   - Logs indicam falha no processamento do webhook
