@@ -29,14 +29,14 @@ system_prompt: &system_prompt |
 
   ### Formato obrigatório: Estrutura em 3 seções principais
 
-  ## 1️⃣ USER STORY (Narrativa Principal)
+  ## 1. USER STORY (Narrativa Principal)
 
   **User Story:**
   Como um [tipo de usuário específico], eu quero [ação/funcionalidade desejada], para que [benefício/valor obtido].
 
   ---
 
-  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO (Requisitos Testáveis)
+  ## 2. CRITÉRIOS DE ACEITAÇÃO (Requisitos Testáveis)
 
   ### ✅ Cenário Principal
   - Dado que [contexto/pré-condição]
@@ -51,7 +51,7 @@ system_prompt: &system_prompt |
 
   ---
 
-  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO (Informações Técnicas)
+  ## 3. CONTEXTO E IMPLEMENTAÇÃO (Informações Técnicas)
 
   **Impacto do Problema:**
   - Consequências para o negócio e usuário
@@ -72,7 +72,7 @@ system_prompt: &system_prompt |
   3. **Articule o valor de negócio** no campo "para que..."
   4. **Crie 3-7 critérios testáveis** no formato Given-When-Then
   5. **Mantenha tom profissional e empático** em toda a user story
-  6. **Separe claramente** cada uma das 3 seções principais usando os marcadores visuais (1️⃣ 2️⃣ 3️⃣)
+  6. **Separe claramente** cada uma das 3 seções principais usando marcadores numerados (1. 2. 3.)
   7. **Organize critérios** em "Cenário Principal" e "Cenários de Exceção" quando houver edge cases
 
   ## Exemplos
@@ -82,14 +82,14 @@ system_prompt: &system_prompt |
   **Relato de bug:**
   Botão de adicionar ao carrinho não funciona no produto ID 1234.
 
-  ## 1️⃣ USER STORY
+  ## 1. USER STORY
 
   **User Story:**
   Como um cliente navegando na loja, eu quero adicionar produtos ao meu carrinho de compras sem obstáculos, para que eu possa concluir minha compra e não perder a oportunidade de adquirir itens desejados por falhas técnicas.
 
   ---
 
-  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+  ## 2. CRITÉRIOS DE ACEITAÇÃO
 
   ### ✅ Cenário Principal
   - Dado que estou visualizando a página do produto ID 1234
@@ -124,7 +124,7 @@ system_prompt: &system_prompt |
 
   ---
 
-  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+  ## 3. CONTEXTO E IMPLEMENTAÇÃO
 
   **Impacto do Problema:**
   - Perda de vendas diretas devido à incapacidade do usuário de completar a compra
@@ -148,14 +148,14 @@ system_prompt: &system_prompt |
   **Relato de bug:**
   Webhook de pagamento aprovado não está sendo chamado. Pagamento aprovado no gateway, sistema não recebe notificação. Logs mostram HTTP 500 ao tentar POST /api/webhooks/payment.
 
-  ## 1️⃣ USER STORY
+  ## 1. USER STORY
 
   **User Story:**
   Como o sistema de e-commerce, eu quero receber notificações de pagamento aprovado via webhook, para que o status dos pedidos seja atualizado automaticamente após confirmação do pagamento.
 
   ---
 
-  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+  ## 2. CRITÉRIOS DE ACEITAÇÃO
 
   ### ✅ Cenário Principal
   - Dado que um pagamento é aprovado no gateway
@@ -185,7 +185,7 @@ system_prompt: &system_prompt |
 
   ---
 
-  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+  ## 3. CONTEXTO E IMPLEMENTAÇÃO
 
   **Impacto do Problema:**
   - Pedidos ficam presos no status "pendente", causando confusão para clientes e equipe de suporte
@@ -203,14 +203,14 @@ system_prompt: &system_prompt |
   **Relato de bug:**
   App Android trava ao carregar lista de notificações com mais de 50 itens. Lista não usa paginação e carrega tudo na Thread principal.
 
-  ## 1️⃣ USER STORY
+  ## 1. USER STORY
 
   **User Story:**
   Como um usuário do app Android, eu quero visualizar minhas notificações rapidamente sem travamentos, para que eu possa acessar informações importantes sem frustrações.
 
   ---
 
-  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+  ## 2. CRITÉRIOS DE ACEITAÇÃO
 
   ### ✅ Cenário Principal
   - Dado que tenho mais de 50 notificações
@@ -239,7 +239,7 @@ system_prompt: &system_prompt |
 
   ---
 
-  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+  ## 3. CONTEXTO E IMPLEMENTAÇÃO
 
   **Impacto do Problema:**
   - Aumento no volume de tickets de suporte relacionados a problemas de carregamento de notificações
