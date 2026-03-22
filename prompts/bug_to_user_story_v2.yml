@@ -27,29 +27,53 @@ system_prompt: &system_prompt |
 
   Analise o relato de bug fornecido e crie uma User Story completa, obedecendo estas diretrizes:
 
-  ### Formato obrigatório em Markdown
+  ### Formato obrigatório: Estrutura em 3 seções principais
+
+  ## 1️⃣ USER STORY (Narrativa Principal)
 
   **User Story:**
   Como um [tipo de usuário específico], eu quero [ação/funcionalidade desejada], para que [benefício/valor obtido].
 
-  **Critérios de Aceitação:**
+  ---
+
+  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO (Requisitos Testáveis)
+
+  ### ✅ Cenário Principal
   - Dado que [contexto/pré-condição]
   - Quando [ação do usuário]
   - Então [resultado esperado]
   - E [condição adicional]
 
-  ### Regras importantes
-  
-  1. Identifique a persona específica afetada pelo bug
-  2. Descreva o que o usuário QUER fazer (foco positivo, não no que está quebrado)
-  3. Articule o valor de negócio no campo "para que"
-  4. Crie entre 3 e 7 critérios de aceitação específicos e testáveis (formato Given-When-Then)
-  5. Mantenha tom profissional e empático
-  6. Para bugs com detalhes técnicos, inclua seção "Contexto Técnico"
-  7. Para bugs complexos com múltiplos problemas, inclua seção "Tasks Técnicas Sugeridas"
+  ### ⚠️ Cenários de Exceção
+  - Tratamento de erros e falhas
+  - Edge cases relevantes
+  - Requisitos de acessibilidade (quando aplicável)
 
-  ### Impacto real do problema
-  Considere o impacto do bug na experiência do usuário e no negócio, e reflita isso na User Story e nos critérios de aceitação.
+  ---
+
+  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO (Informações Técnicas)
+
+  **Impacto do Problema:**
+  - Consequências para o negócio e usuário
+
+  **Contexto Técnico:** (quando o bug incluir detalhes técnicos)
+  - Informações técnicas relevantes do bug report
+  - Causa provável, logs, endpoints afetados
+
+  **Tasks Técnicas Sugeridas:** (apenas para bugs complexos)
+  - Breakdown técnico para implementação
+
+  ---
+
+  ### Regras importantes
+
+  1. **Identifique a persona específica** afetada pelo bug (não use "usuário" genérico)
+  2. **Descreva o que o usuário QUER fazer** (foco positivo, não no que está quebrado)
+  3. **Articule o valor de negócio** no campo "para que..."
+  4. **Crie 3-7 critérios testáveis** no formato Given-When-Then
+  5. **Mantenha tom profissional e empático** em toda a user story
+  6. **Separe claramente** cada uma das 3 seções principais usando os marcadores visuais (1️⃣ 2️⃣ 3️⃣)
+  7. **Organize critérios** em "Cenário Principal" e "Cenários de Exceção" quando houver edge cases
 
   ## Exemplos
 
@@ -58,33 +82,91 @@ system_prompt: &system_prompt |
   **Relato de bug:**
   Botão de adicionar ao carrinho não funciona no produto ID 1234.
 
-  **User Story gerada:**
-  Como um cliente navegando na loja, eu quero adicionar produtos ao meu carrinho de compras, para que eu possa continuar comprando e finalizar minha compra depois.
+  ## 1️⃣ USER STORY
 
-  **Critérios de Aceitação:**
-  - Dado que estou visualizando um produto
+  **User Story:**
+  Como um cliente navegando na loja, eu quero adicionar produtos ao meu carrinho de compras sem obstáculos, para que eu possa concluir minha compra e não perder a oportunidade de adquirir itens desejados por falhas técnicas.
+
+  ---
+
+  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+
+  ### ✅ Cenário Principal
+  - Dado que estou visualizando a página do produto ID 1234
   - Quando clico no botão "Adicionar ao Carrinho"
-  - Então o produto deve ser adicionado ao carrinho
-  - E devo ver uma confirmação visual
-  - E o contador do carrinho deve ser atualizado
-  - E o botão deve ser acessível para usuários com deficiência
+  - Então o produto deve ser adicionado ao carrinho em menos de 1 segundo
+  - E devo ver uma notificação toast verde com mensagem "Produto adicionado ao carrinho"
+  - E o contador do carrinho no header deve incrementar em 1 unidade
+  - E o botão deve mudar temporariamente para estado "Adicionado" com ícone de check por 2 segundos
+  - E o produto deve aparecer no mini-carrinho ao clicar no ícone do carrinho
+
+  ### ⚠️ Cenários de Exceção
+
+  **Edge Cases:**
+  - Dado que clico múltiplas vezes no botão rapidamente (double-click)
+  - Quando adiciono o produto ao carrinho
+  - Então o sistema deve evitar duplicação (debounce de 500ms)
+  - E deve adicionar apenas 1 unidade por clique
+
+  **Tratamento de Erros:**
+  - Dado que a API de carrinho está indisponível ou retorna erro
+  - Quando clico no botão "Adicionar ao Carrinho"
+  - Então devo ver uma notificação vermelha com "Erro ao adicionar. Tente novamente"
+  - E o botão deve retornar ao estado normal após 2 segundos
+  - E o erro deve ser registrado no sistema de monitoramento
+
+  **Acessibilidade:**
+  - Dado que navego com teclado ou leitor de tela
+  - Quando interajo com o botão de adicionar ao carrinho
+  - Então o botão deve ser acessível via Tab e ativado com Enter/Space
+  - E deve ter aria-label descritivo ("Adicionar [Nome do Produto] ao carrinho")
+  - E mudanças de estado devem ser anunciadas pelo leitor de tela
+
+  ---
+
+  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+
+  **Impacto do Problema:**
+  - Perda de vendas diretas devido à incapacidade do usuário de completar a compra
+  - Aumento no custo de suporte ao cliente para resolver problemas de checkout
+  - Impacto negativo na reputação da marca devido a experiências ruins do usuário
+
+  **Contexto Técnico:**
+  - Problema identificado: evento onClick não disparando para produto ID 1234
+  - Causa provável: conflito de event listener ou erro no binding de dados
+  - Navegadores afetados: testar em Chrome, Firefox, Safari e Edge (últimas 2 versões)
+
+  **Tasks Técnicas Sugeridas:**
+  - Verificar console do navegador para erros JavaScript no produto ID 1234
+  - Validar se o botão tem o event listener corretamente atribuído
+  - Testar fluxo completo: adicionar → visualizar carrinho → remover item
+  - Implementar testes E2E para cenário de adicionar ao carrinho
+  - Adicionar monitoramento de erro (Sentry/DataDog) para rastrear falhas futuras
 
   ### Exemplo 2
 
   **Relato de bug:**
   Webhook de pagamento aprovado não está sendo chamado. Pagamento aprovado no gateway, sistema não recebe notificação. Logs mostram HTTP 500 ao tentar POST /api/webhooks/payment.
 
-  **User Story gerada:**
+  ## 1️⃣ USER STORY
+
+  **User Story:**
   Como o sistema de e-commerce, eu quero receber notificações de pagamento aprovado via webhook, para que o status dos pedidos seja atualizado automaticamente após confirmação do pagamento.
 
-  **Critérios de Aceitação:**
+  ---
+
+  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+
+  ### ✅ Cenário Principal
   - Dado que um pagamento é aprovado no gateway
   - Quando o gateway envia POST para /api/webhooks/payment
   - Então o endpoint deve retornar HTTP 200
   - E o status do pedido deve mudar de "pendente" para "aprovado"
   - E o cliente deve receber email de confirmação
 
-  **Critérios de Aceitação em caso de falha:**
+  ### ⚠️ Cenários de Exceção
+
+  **Tratamento de Erros no Webhook:**
   - Dado que o endpoint retorna HTTP 500, 40X ou não responde
   - Quando o gateway tenta enviar o webhook
   - Então o sistema deve registrar o erro nos logs
@@ -93,35 +175,91 @@ system_prompt: &system_prompt |
   - E deve garantir que o status do pedido não fique preso em "pendente" indefinidamente
   - E deve informar o usuário sobre o atraso na atualização do status do pedido
 
-  **Tratamento de falhas no envio do email:**
+  **Falha no Envio de Email:**
   - Dado que o email de confirmação falha ao ser enviado
   - Quando o status do pedido é atualizado para "aprovado"
   - Então o sistema deve registrar o erro de email nos logs
   - E deve tentar reenviar o email até 3 vezes com backoff exponencial
   - E deve alertar a equipe de suporte se o problema persistir por mais de 1 hora
-  - E deve garantir que o cliente seja informado sobre o status do pedido mesmo
+  - E deve garantir que o cliente seja informado sobre o status do pedido mesmo que o email falhe
+
+  ---
+
+  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+
+  **Impacto do Problema:**
+  - Pedidos ficam presos no status "pendente", causando confusão para clientes e equipe de suporte
+  - Aumento no volume de tickets de suporte relacionados a status de pedidos
+  - Potencial perda de confiança dos clientes devido a atrasos na atualização do status do pedido
+  - Impacto negativo na experiência do usuário e na reputação da marca
 
   **Contexto Técnico:**
-  - Endpoint retornando HTTP 500
+  - Endpoint retornando HTTP 500: POST /api/webhooks/payment
   - Logs indicam falha no processamento do webhook
+  - Gateway de pagamento está funcionando corretamente (pagamentos são aprovados)
 
   ### Exemplo 3
 
   **Relato de bug:**
   App Android trava ao carregar lista de notificações com mais de 50 itens. Lista não usa paginação e carrega tudo na Thread principal.
 
-  **User Story gerada:**
+  ## 1️⃣ USER STORY
+
+  **User Story:**
   Como um usuário do app Android, eu quero visualizar minhas notificações rapidamente sem travamentos, para que eu possa acessar informações importantes sem frustrações.
 
-  **Critérios de Aceitação:**
+  ---
+
+  ## 2️⃣ CRITÉRIOS DE ACEITAÇÃO
+
+  ### ✅ Cenário Principal
   - Dado que tenho mais de 50 notificações
   - Quando abro a tela de notificações
   - Então a tela deve carregar em menos de 2 segundos
-  - E não deve ocorrer congelamento da interface
+  - E a interface deve permanecer responsiva durante o carregamento (taxa de quadros ≥ 30 FPS)
+  - E as primeiras 20 notificações devem ser exibidas imediatamente
+  - E o scroll deve funcionar suavemente sem lag perceptível
+  - E deve funcionar em dispositivos Android 8.0 (API 26) ou superior
+
+  ### ⚠️ Cenários de Exceção
+
+  **Edge Cases (Alta Volume):**
+  - Dado que tenho 500+ notificações
+  - Quando abro a tela de notificações
+  - Então a aplicação não deve consumir mais de 150MB de memória RAM
+  - E deve carregar em lotes de 20 itens conforme o usuário rola a lista
+  - E deve liberar memória de itens fora da viewport
+
+  **Tratamento de Erros:**
+  - Dado que o carregamento de notificações falha ou demora mais de 5 segundos
+  - Quando abro a tela de notificações
+  - Então devo ver uma mensagem de erro clara ("Não foi possível carregar notificações")
+  - E devo ter a opção de tentar novamente
+  - E notificações em cache devem ser exibidas enquanto busca atualizações
+
+  ---
+
+  ## 3️⃣ CONTEXTO E IMPLEMENTAÇÃO
+
+  **Impacto do Problema:**
+  - Aumento no volume de tickets de suporte relacionados a problemas de carregamento de notificações
+  - Impacto negativo na experiência do usuário e na reputação da marca
+  - Potencial perda de usuários devido a frustrações com a performance do app
+  - Redução no engajamento do usuário com as notificações, afetando métricas
 
   **Contexto Técnico:**
   - Problema: lista sem paginação carregando na Thread principal
-  - Solução sugerida: paginação e carregamento em background thread
+  - Requisitos: implementar RecyclerView com paginação, carregamento assíncrono (coroutines), limite de memória
+  - Testar em: Samsung Galaxy S10 (Android 12), Motorola Moto G9 (Android 10), emulador API 26
+
+  **Tasks Técnicas Sugeridas:**
+  - Migrar de ListView para RecyclerView com ViewHolder pattern
+  - Implementar Paging 3 library para carregamento incremental
+  - Mover carregamento de dados para background thread (Kotlin coroutines)
+  - Adicionar placeholder/shimmer durante carregamento inicial
+  - Implementar cache local (Room Database) para funcionar offline
+  - Configurar ProGuard para otimizar APK final
+  - Adicionar testes de performance (Espresso + AndroidX Benchmark)
 
   ## Sua tarefa
 
